@@ -41,7 +41,7 @@
     .victory-animation {
       animation: victoryAnimation 2s ease-in-out infinite;
       transform-origin: center;
-	  margin-top: -20px !important;
+      margin-top: -20px !important;
     }
     @keyframes windmillShake {
       0% { transform: rotate(0deg); }
@@ -96,8 +96,8 @@
       100% { box-shadow: 0 0 5px rgba(0,255,0,0.7); }
     }
     @keyframes borderGlow {
-      0%, 100% { box-shadow: 0 0 5px 2px yellow; }
-      50% { box-shadow: 0 0 20px 2px yellow; }
+      0%, 100% { box-shadow: 0 0 5px 2px purple; }
+      50% { box-shadow: 0 0 20px 2px purple; }
     }
     @keyframes borderGlow2 {
       0%, 100% { box-shadow: 0 0 5px 2px rgba(255,0,0,0.7); }
@@ -268,7 +268,7 @@
       display: block;
       padding: 15px 25px;
       font-size: 25px;
-      border: 3px solid #267bf1;
+      border: 3px solid white;
       border-radius: 10px;
       background-color: #1a1d21;
       color: white;
@@ -435,7 +435,6 @@
         45% { transform: rotate(10deg); }
         60% { transform: rotate(-10deg); }
         75% { transform: rotate(5deg); }
-        90% { transform: rotate(-5deg); }
         100% { transform: rotate(0deg); }
       }
       .windmill-shake {
@@ -513,17 +512,83 @@
       80%  { transform: translateY(-60px) scale(1) rotate(-3deg); }
       100% { transform: translateY(-60px) scale(1) rotate(0deg); }
     }
-	  @media (max-width: 480px) {
-  .perfect-img {
-    margin-bottom: 30px!important;
-  }
+    @media (max-width: 480px) {
+      .perfect-img {
+        margin-bottom: 30px!important;
+      }
+    }
+    @media (max-width: 480px) {
+      .mobile-youwin {
+        margin-top: 20px !important;
+        margin-bottom: -30px !important;
+      }
+    }
+    .index-btn {
+  width: 80px;
+  height: 40px;
+  font-size: 14px;
+  margin: 10px auto 0;
+  display: block;
+  cursor: pointer;
+  background: linear-gradient(to top, black, gray);
+  color: white;
+  font-weight: bold;
+  border: 2px solid white;
+  border-radius: 10px;
+  text-shadow: 1px 1px 2px black;
+  transition: transform 0.1s ease-in-out;
+  animation: borderGlow 2s ease-in-out infinite;
 }
-	  @media (max-width: 480px) {
-  .mobile-youwin {
-    /* On n'utilise ici que margin-top pour déplacer l'image,
-       ce qui n'interfère pas avec l'animation appliquée sur transform */
-    margin-top: 20px !important;
-	  margin-bottom: -30px !important;
+.index-btn:active {
+  transform: scale(0.95);
+}
+
+/* Modal INDEX */
+#index-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.5);
+  padding: 20px;
+  border-radius: 15px;
+  z-index: 1000;
+  text-align: center;
+  width: 300px;
+  max-width: 80%;
+}
+#index-modal .index-option {
+  width: 60px;
+  height: 60px;
+  margin: 0 10px;
+  font-size: 18px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: linear-gradient(to top, black, gray);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out;
+}
+#index-modal .index-option:active {
+  transform: scale(0.95);
+}
+#index-modal #close-index-modal {
+  margin-top: 20px;
+  padding: 8px 16px;
+  font-size: 16px;
+  border: 2px solid white;
+  border-radius: 5px;
+  background: linear-gradient(to top, black, gray);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out;
+}
+      @media (max-width: 480px) {
+  #quiz-container {
+    max-height: 80vh; /* 80% de la hauteur de l'écran */
+    overflow-y: auto; /* Ajoute une barre de défilement verticale si nécessaire */
   }
 }
   </style>
@@ -542,8 +607,13 @@
   <div class="container" id="home">
     <img src="images/titre.png" alt="quiz ssiap1" class="floating-title">
     <img src="images/decor1.gif" alt="pik" class="pikachu" style="z-index: 3;">
-    <img id="mute-btn" src="images/mute-off.gif" alt="Son activé" style="cursor: pointer; width: 30px; height: 25px; margin: -10px auto -2px;">
+    <div class="mute-wrapper" style="position: relative; display: inline-block; text-align: center;">
+    <img id="mute-btn" src="images/mute-off.gif" alt="Son activé" style="cursor: pointer; width: 30px; height: 25px; margin: 10px auto; display: block;">
+    <img id="additional-image" src="images/diez.png" alt="Nouvelle image" 
+         style="position: absolute; right: -120px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 60px;">
+  </div>
     <button id="start-btn"><img src="images/start.png" style="margin-bottom: -15px; width: 130px"></button>
+    <button id="home-index-btn" class="index-btn">INDEX</button>
   </div>
   
   <!-- Zone du quiz -->
@@ -560,10 +630,20 @@
   <!-- Page de résultats finale -->
   <div class="container" id="result-page">
     <img id="result-header" src="images/tryagain.png" alt="encore" class="again">
-    <img id="final-image" src="images/lose1.gif" alt="Résultat" style="display:block; margin: -15px auto 20px;">
+    <img id="final-image" src="images/lose2.gif" alt="Résultat" style="display:block; margin: -15px auto 20px;">
     <p id="final-score">Score : 0 sur 3</p>
     <button id="restart-btn" style="text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 3px 3px 5px black;">RECOMMENCER</button>
+    <button id="result-index-btn" class="index-btn">INDEX</button>
   </div>
+
+  <div id="index-modal">
+  <button class="index-option" data-url="https://remi-mason.github.io/quiz-5/">1</button>
+  <button class="index-option" data-url="https://remi-mason.github.io/quiz-5-2/">2</button>
+  <button class="index-option" data-url="https://remi-mason.github.io/quiz-5-3/">3</button>
+  <br>
+      <button class="index-option" data-url="https://remi-mason.github.io/quiz-5-4/" style="margin-top:20px;">4</button>
+  <button id="close-index-modal">Fermer</button>
+</div>
   
   <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -577,16 +657,357 @@
         }, 18000);
       }
     });
-    
     // Données du quiz
     const quizData = [
-      {
-        question: "Sur quel feu peut-on utiliser un extincteur à eau pulvérisée avec additif (A.F.F.F.) ?",
-        options: ["Classe A", "Classe B", "Classe C", "Classe D", "Classe F", "aucune des réponses précédentes"],
-        correctAnswers: ["Classe A", "Classe B"]
-      }
+  {
+            "question": "Que signifie l'acronyme D.M. ?",
+            "options": [
+                "Déclencheur Manuel.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Déclencheur Manuel."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme D.S. ?",
+            "options": [
+                "Diffuseur Sonore.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Diffuseur Sonore."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.A. ?",
+            "options": [
+                "Équipement d'Alarme.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Équipement d'Alarme."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.A.I. ?",
+            "options": [
+                "Installation d’Extincteur Automatique d’Incendie.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Installation d’Extincteur Automatique d’Incendie."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.C.S. ?",
+            "options": [
+                "Équipement de Contrôle et de Signalisation.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Équipement de Contrôle et de Signalisation."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.C.S.A.V. ?",
+            "options": [
+                "Équipement de Contrôle et de Signalisation d’Alarme Vocale.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Équipement de Contrôle et de Signalisation d’Alarme Vocale."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.O.P. ?",
+            "options": [
+                "Établissement Ouvert au Public.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Établissement Ouvert au Public."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. ?",
+            "options": [
+                "Établissement Recevant du Public.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Établissement Recevant du Public."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. C.T.S. ?",
+            "options": [
+                "Chapiteaux, Tentes et Structures Itinérants.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Chapiteaux, Tentes et Structures Itinérants."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. F. ?",
+            "options": [
+                "Établissements Flottants (eaux intérieures).",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Établissements Flottants (eaux intérieures)."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. P. ?",
+            "options": [
+                "Salles de danse et salles de jeux.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Salles de danse et salles de jeux."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. G.A. ?",
+            "options": [
+                "Gares Accessibles au public.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Gares Accessibles au public."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. J. ?",
+            "options": [
+                "Structures d’accueil pour personnes âgées et personnes handicapées.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Structures d’accueil pour personnes âgées et personnes handicapées."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. L. ?",
+            "options": [
+                "Salles d’audition, de conférence, de réunions, de spectacles ou à usages multiples.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Salles d’audition, de conférence, de réunions, de spectacles ou à usages multiples."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. M. ?",
+            "options": [
+                "Magasins de vente, centres commerciaux.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Magasins de vente, centres commerciaux."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. N. ?",
+            "options": [
+                "Restaurants et débits de boisson.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Restaurants et débits de boisson."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. O. ?",
+            "options": [
+                "Hôtels, pension de famille.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Hôtels, pension de famille."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. O.A. ?",
+            "options": [
+                "Hôtel-restaurant d’Altitude.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Hôtel-restaurant d’Altitude."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. P.A. ?",
+            "options": [
+                "Établissements Plein Air.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Établissements Plein Air."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. P.S. ?",
+            "options": [
+                "Parcs de Stationnement couverts.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Parcs de Stationnement couverts."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. R. ?",
+            "options": [
+                "Établissements d’enseignement et colonies de vacances.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Établissements d’enseignement et colonies de vacances."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. R.E.F. ?",
+            "options": [
+                "REFuges de montagne.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "REFuges de montagne."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. S. ?",
+            "options": [
+                "Bibliothèques, centres de documentation.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Bibliothèques, centres de documentation."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. S.G. ?",
+            "options": [
+                "Structures Gonflables.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Structures Gonflables."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. T. ?",
+            "options": [
+                "Salles d’expositions à vocation commerciale.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Salles d’expositions à vocation commerciale."
+            ]
+        },
+        {
+            "question": "Que signifie l'acronyme E.R.P. U. ?",
+            "options": [
+                "Établissement de soins.",
+                "Système de ventilation incendie",
+                "Type d'extincteur spécifique",
+                "Norme de construction en ERP",
+                "Aucune des réponses"
+            ],
+            "correctAnswers": [
+                "Établissement de soins."
+            ]
+        }
     ];
-    
+     // Fonction de mélange (shuffle) avec l'algorithme Fisher-Yates
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+// Mélange des questions
+shuffleArray(quizData);
     let currentQuestion = 0;
     let score = 0;
     let isMuted = false;
@@ -657,32 +1078,38 @@
     });
     
     // Affichage de la question
-    function showQuestion() {
-      resultDiv.innerHTML = "";
-      const data = quizData[currentQuestion];
-      questionCounterEl.textContent = `${currentQuestion + 1} / ${quizData.length}`;
-      questionTextEl.textContent = data.question;
-      optionsDiv.innerHTML = "";
-      data.options.forEach((option, index) => {
-        const div = document.createElement("div");
-        div.className = "option";
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = option;
-        checkbox.name = "option";
-        checkbox.id = `option_${index}`;
-        checkbox.addEventListener("click", () => { 
-          checkboxSound.currentTime = 0; 
-          checkboxSound.play(); 
-        });
-        const label = document.createElement("label");
-        label.htmlFor = `option_${index}`;
-        label.textContent = option;
-        div.appendChild(checkbox);
-        div.appendChild(label);
-        optionsDiv.appendChild(div);
-      });
-    }
+   function showQuestion() {
+  resultDiv.innerHTML = "";
+  const data = quizData[currentQuestion];
+
+  // Mélanger les options avant de les afficher
+  shuffleArray(data.options);
+
+  questionCounterEl.textContent = `${currentQuestion + 1} / ${quizData.length}`;
+  questionTextEl.textContent = data.question;
+  optionsDiv.innerHTML = "";
+
+  data.options.forEach((option, index) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = option;
+    checkbox.name = "option";
+    checkbox.id = `option_${index}`;
+    checkbox.addEventListener("click", () => { 
+      checkboxSound.currentTime = 0; 
+      checkboxSound.play(); 
+    });
+    const label = document.createElement("label");
+    label.htmlFor = `option_${index}`;
+    label.textContent = option;
+    div.appendChild(checkbox);
+    div.appendChild(label);
+    optionsDiv.appendChild(div);
+  });
+}
+
     
     // Comparaison des tableaux
     function arraysEqual(a, b) {
@@ -692,7 +1119,6 @@
       return sortedA.every((val, index) => val === sortedB[index]);
     }
     
-    const incorrectSound2 = document.getElementById("incorrect-sound2");
     validateBtn.addEventListener("click", () => {
       const data = quizData[currentQuestion];
       const selected = Array.from(document.querySelectorAll('input[name="option"]:checked')).map(el => el.value);
@@ -702,6 +1128,7 @@
       }
       const isCorrect = arraysEqual(selected, data.correctAnswers);
       validateBtn.style.display = "none";
+      
       if (isCorrect) {
         score++;
         correctSound.currentTime = 0;
@@ -713,8 +1140,20 @@
             <img src="images/ken.gif" alt="Décoration droite" class="decor-right">
           </div>
         `;
+        // Passage automatique à la question suivante après 2 secondes
+        setTimeout(() => {
+          currentQuestion++;
+          if (currentQuestion < quizData.length) {
+            showQuestion();
+            validateBtn.style.display = "block";
+            resultDiv.innerHTML = "";
+          } else {
+            showResultPage();
+          }
+        }, 2000);
       } else {
-        const selectedSound = (Math.random() < 0.5) ? incorrectSound : incorrectSound2;
+        // Réponse incorrecte : on affiche immédiatement le résultat
+        const selectedSound = (Math.random() < 0.5) ? incorrectSound : document.getElementById("incorrect-sound2");
         selectedSound.currentTime = 0;
         selectedSound.play();
         resultDiv.innerHTML = `
@@ -726,115 +1165,131 @@
           <div class="incorrect-answer-header">Réponse :</div>
           <div class="incorrect-answer-text">${data.correctAnswers.join(", ")}</div>
         `;
+        // Après 2 secondes, on remplace l'image incorrecte par un bouton "Suivant" et on supprime les décorations
+        setTimeout(() => {
+          const container = document.querySelector(".incorrect-container");
+          if (container) {
+            container.innerHTML = ""; // supprimer ryu2.gif et ken2.gif ainsi que l'image incorrecte
+          }
+          // Création du bouton "Suivant"
+          const nextBtn = document.createElement("button");
+          nextBtn.textContent = "Suivant";
+          nextBtn.style.fontWeight = "bold";
+          nextBtn.style.margin = "20px auto 10px";
+          nextBtn.style.display = "block";
+          nextBtn.style.padding = "15px 25px";
+          nextBtn.style.fontSize = "25px";
+          nextBtn.style.border = "3px solid white";
+          nextBtn.style.borderRadius = "10px";
+          nextBtn.style.backgroundColor = "#1a1d21";
+          nextBtn.style.color = "white";
+          nextBtn.style.cursor = "pointer";
+          nextBtn.style.transition = "transform 0.1s ease, box-shadow 0.1s ease";
+          nextBtn.style.animation = "borderGlow 2s ease-in-out infinite";
+          // Insertion du bouton avant le bloc "Réponse :"
+          const header = document.querySelector(".incorrect-answer-header");
+          resultDiv.insertBefore(nextBtn, header);
+          nextBtn.addEventListener("click", () => {
+            // Au clic, on passe à la question suivante
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+              showQuestion();
+              validateBtn.style.display = "block";
+              resultDiv.innerHTML = "";
+            } else {
+              showResultPage();
+            }
+          });
+        }, 2000);
       }
-      const delayTime = isCorrect ? 2000 : 3000;
-      setTimeout(() => {
-        currentQuestion++;
-        if (currentQuestion < quizData.length) {
-          showQuestion();
-          validateBtn.style.display = "block";
-        } else {
-          showResultPage();
-        }
-      }, delayTime);
     });
     
     // Affichage de la page finale
-function showResultPage() {
-  quizContainer.style.display = "none";
-  resultPage.style.display = "block";
-  const resultHeader = document.getElementById("result-header");
-
-  if (score === quizData.length) {
-    restartBtn.style.animation = "borderGlowGreen 2s ease-in-out infinite";
-    resultPage.style.background = "url('images/wall.png') no-repeat center center";
-    resultHeader.src = "images/youwin.png";
-    resultHeader.classList.add("victory-animation");
-	 resultHeader.style = "margin-bottom: 10px";
-
-    // Positioning for youwin.png (header)
-    if (window.innerWidth <= 480) {
-     resultHeader.classList.add("mobile-youwin");
-    } else {
-      resultHeader.style.transform = "translateX(0)";
-      resultHeader.style.marginTop = "10px";
+    function showResultPage() {
+      quizContainer.style.display = "none";
+      resultPage.style.display = "block";
+      const resultHeader = document.getElementById("result-header");
+    
+      if (score === quizData.length) {
+        restartBtn.style.animation = "borderGlowGreen 2s ease-in-out infinite";
+        resultPage.style.background = "url('images/wall.png') no-repeat center center";
+        resultHeader.src = "images/youwin.png";
+        resultHeader.classList.add("victory-animation");
+        resultHeader.style.marginBottom = "10px";
+        if (window.innerWidth <= 480) {
+          resultHeader.classList.add("mobile-youwin");
+        } else {
+          resultHeader.style.transform = "translateX(0)";
+          resultHeader.style.marginTop = "10px";
+        }
+        finalScoreEl.style.color = "#00ff1a";
+        finalImage.classList.add("raised");
+        finalImage.style.width = (window.innerWidth <= 480) ? "150px" : "190px";
+        if (window.innerWidth <= 480) {
+          finalImage.style.marginTop = "-25px";
+          finalImage.style.marginBottom = "10px";
+        } else {
+          finalImage.style.marginTop = "";
+          finalImage.style.marginBottom = "";
+        }
+        if (!document.getElementById("confet-overlay")) {
+          let overlay = document.createElement("img");
+          overlay.id = "confet-overlay";
+          overlay.src = "images/confet.gif";
+          overlay.alt = "Overlay de victoire";
+          overlay.style.position = "absolute";
+          overlay.style.top = "0";
+          overlay.style.left = "0";
+          overlay.style.width = "100%";
+          overlay.style.height = "100%";
+          overlay.style.objectFit = "cover";
+          overlay.style.zIndex = "5";
+          resultPage.appendChild(overlay);
+        }
+      } else {
+        restartBtn.style.animation = "borderGlow2 2s ease-in-out infinite";
+        resultPage.style.background = "url('images/wall2.png') no-repeat center center";
+        resultHeader.src = "images/tryagain.png";
+        if (window.innerWidth <= 480) {
+          resultHeader.style.transform = "translateY(-40px)";
+          resultHeader.style.marginTop = "-40px";
+        } else {
+          resultHeader.style.transform = "translateY(-20px)";
+          resultHeader.style.marginTop = "-30px";
+        }
+        finalScoreEl.style.color = "red";
+        resultHeader.classList.add("windmill-shake");
+        finalImage.classList.remove("raised");
+        finalImage.style.width = "190px";
+        finalImage.style.transform = "";
+        setInterval(() => {
+          resultHeader.classList.remove("windmill-shake");
+          void resultHeader.offsetWidth;
+          resultHeader.classList.add("windmill-shake");
+        }, 2800);
+      }
+    
+      resultPage.style.backgroundSize = "cover";
+      resultPage.style.backgroundPosition = "center";
+      finalScoreEl.textContent = `Score : ${score} sur ${quizData.length}`;
+    
+      if (score === quizData.length) {
+        finalImage.src = "images/perfect.gif";
+        finalImage.classList.add("perfect-img");
+        finalImage.style.marginBottom = "30px";
+      } else {
+        finalImage.src = "images/lose2.gif";
+      }
+    
+      if (score === quizData.length) {
+        document.getElementById("perfect-sound").currentTime = 0;
+        document.getElementById("perfect-sound").play();
+      } else {
+        document.getElementById("imperfect-sound").currentTime = 0;
+        document.getElementById("imperfect-sound").play();
+      }
     }
-
-    finalScoreEl.style.color = "#00ff1a";
-    finalImage.classList.add("raised");
-    finalImage.style.width = (window.innerWidth <= 480) ? "150px" : "190px";
-
-    // On mobile only: reduce space between youwin.png and perfect.gif,
-    // and move perfect.gif (finalImage) slightly upward.
-    if (window.innerWidth <= 480) {
-      finalImage.style.marginTop = "-25px";    // move perfect.gif up
-      finalImage.style.marginBottom = "10px";    // reduce the gap below perfect.gif
-    } else {
-      finalImage.style.marginTop = "";
-      finalImage.style.marginBottom = "";
-    }
-
-    // Add overlay GIF for victory if not already present
-    if (!document.getElementById("confet-overlay")) {
-      let overlay = document.createElement("img");
-      overlay.id = "confet-overlay";
-      overlay.src = "images/confet.gif";
-      overlay.alt = "Overlay de victoire";
-      overlay.style.position = "absolute";
-      overlay.style.top = "0";
-      overlay.style.left = "0";
-      overlay.style.width = "100%";
-      overlay.style.height = "100%";
-      overlay.style.objectFit = "cover";
-      overlay.style.zIndex = "5";
-      resultPage.appendChild(overlay);
-    }
-  } else {
-    restartBtn.style.animation = "borderGlow2 2s ease-in-out infinite";
-    resultPage.style.background = "url('images/wall2.png') no-repeat center center";
-    resultHeader.src = "images/tryagain.png";
-
-    if (window.innerWidth <= 480) {
-      resultHeader.style.transform = "translateY(-40px)";
-      resultHeader.style.marginTop = "-40px";
-    } else {
-      resultHeader.style.transform = "translateY(-20px)";
-      resultHeader.style.marginTop = "-30px";
-    }
-
-    finalScoreEl.style.color = "red";
-    resultHeader.classList.add("windmill-shake");
-    finalImage.classList.remove("raised");
-    finalImage.style.width = "190px";
-    finalImage.style.transform = "";
-    setInterval(() => {
-      resultHeader.classList.remove("windmill-shake");
-      void resultHeader.offsetWidth;
-      resultHeader.classList.add("windmill-shake");
-    }, 2800);
-  }
-
-  resultPage.style.backgroundSize = "cover";
-  resultPage.style.backgroundPosition = "center";
-  finalScoreEl.textContent = `Score : ${score} sur ${quizData.length}`;
-
-  if (score === quizData.length) {
-    finalImage.src = "images/perfect.gif";
-	  finalImage.classList.add("perfect-img");
-	finalImage.style = "margin-bottom: 30px";
-	
-  } else {
-    finalImage.src = "images/lose2.gif";
-  }
-
-  if (score === quizData.length) {
-    document.getElementById("perfect-sound").currentTime = 0;
-    document.getElementById("perfect-sound").play();
-  } else {
-    document.getElementById("imperfect-sound").currentTime = 0;
-    document.getElementById("imperfect-sound").play();
-  }
-}
+    
     restartBtn.addEventListener("click", () => { window.location.reload(); });
     document.addEventListener("DOMContentLoaded", function() {
       var decorImage = document.querySelector('.pikachu');
@@ -843,6 +1298,38 @@ function showResultPage() {
         decorImage.style.visibility = 'visible';
       }
     });
+    document.addEventListener("DOMContentLoaded", function(){
+  const indexModal = document.getElementById("index-modal");
+  const closeIndexModal = document.getElementById("close-index-modal");
+  const homeIndexBtn = document.getElementById("home-index-btn");
+  const resultIndexBtn = document.getElementById("result-index-btn");
+  
+  if(homeIndexBtn) {
+    homeIndexBtn.addEventListener("click", function(){
+      indexModal.style.display = "block";
+    });
+  }
+  
+  if(resultIndexBtn) {
+    resultIndexBtn.addEventListener("click", function(){
+      indexModal.style.display = "block";
+    });
+  }
+  
+  if(closeIndexModal) {
+    closeIndexModal.addEventListener("click", function(){
+      indexModal.style.display = "none";
+    });
+  }
+  
+  const indexOptions = document.querySelectorAll("#index-modal .index-option");
+  indexOptions.forEach(button => {
+    button.addEventListener("click", function(){
+      window.location.href = button.dataset.url;
+    });
+  });
+});
+
   </script>
 </body>
 </html>
